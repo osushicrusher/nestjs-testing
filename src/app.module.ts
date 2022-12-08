@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { TaskModule } from './tasks/task.module'
+import { TasksModule } from './tasks/tasks.module'
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { TaskModule } from './tasks/task.module'
       autoLoadEntities: true, // true とすると、Entity が自動的に読み込まれます
       synchronize: true, // true とすると、アプリケーションを起動時に自動でテーブルが作成されます
     }),
-    TaskModule,
+    TasksModule,
   ],
 })
 export class AppModule {}
