@@ -1,0 +1,29 @@
+# docker-compose で使用するバージョンを定義しています。2022年9月時点では、3.9が最新です。
+version: '3.9'
+# サービス (コンテナ) を定義します。
+services:
+  # 開発環境用として postgres-dev をサービスとして定義しました。
+  postgres-dev:
+    # Docker Image は postgres:12-alpine を使います。postgres:12-alpine は postgres:12 と比較して、イメージサイズが小さくなっています。
+    image: postgres:12-alpine
+    # コンテナの名前を指定します。
+    container_name: postgres-dev
+    # 環境変数を設定します。
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=mydb-dev
+    # ポートの指定（HOST:CONTAINER）
+    ports:
+      - 5432:5432
+  # テスト環境用として postgres-test をサービスとして定義しました。
+  postgres-test:
+    image: postgres:12-alpine
+    container_name: postgres-test
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=mydb-test
+    # 開発環境用の postgres-dev コンテナのポートと競合しないように HOST 側のポート番号を1減らしました
+    ports:
+      - 5431:5432
