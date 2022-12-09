@@ -1,0 +1,43 @@
+# GitHub リポジトリの Actions タブに表示されるワークフローの名前
+name: Test
+
+# ワークフローのトリガ
+on:
+  push:
+    branches: [main]
+
+# ワークフローで実行される Job をグループ化
+jobs:
+  # コンテナジョブのラベル
+  container-job:
+    # 仮想環境イメージをubuntuに設定
+    runs-on: ubuntu-latest
+    # コンテナの作成。
+    services:
+      # postgres という名前のサービス（=コンテナ）を作成
+      postgres:
+        # Docker Hub image
+        image: postgres:12-alpine
+        # postgres コンテナに認証情報・データベース名を設定
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: mydb-test
+        # ポートの指定
+        ports:
+          - 5431:5432
+        # ヘルスチェックは postgres が起動するまで待つように設定する
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: npm install
+        run: npm install
+      - name: run unit tests
+        run: npm run test:cov
+      - name: run e2e tests
+        run: npm run test:e2e
